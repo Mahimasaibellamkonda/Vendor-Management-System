@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Management System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">VM</div>
+            <div>
+                <h2>VendorHub</h2>
+                <span>Management System</span>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#" class="active">Dashboard</a>
+            <a href="#vendors">Vendors</a>
+            <a href="#contracts">Contracts</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Cloud Platform</p>
+            <strong>Firebase Realtime DB</strong>
+        </div>
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">BUSINESS OPERATIONS</p>
+                <h1>Vendor Management</h1>
+                <p class="subtitle">
+                    Manage suppliers, contracts and vendor relationships.
+                </p>
+            </div>
+
+            <button class="primary-btn" onclick="openModal()">
+                + Add Vendor
+            </button>
+        </header>
+
+
+        <!-- Statistics -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div>
+                    <span>Total Vendors</span>
+                    <h2 id="totalVendors">0</h2>
+                </div>
+                <div class="stat-icon">V</div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <span>Active Vendors</span>
+                    <h2 id="activeVendors">0</h2>
+                </div>
+                <div class="stat-icon active-icon">A</div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <span>Inactive Vendors</span>
+                    <h2 id="inactiveVendors">0</h2>
+                </div>
+                <div class="stat-icon inactive-icon">I</div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <span>Total Contract Value</span>
+                    <h2 id="totalValue">₹0</h2>
+                </div>
+                <div class="stat-icon value-icon">₹</div>
+            </div>
+
+        </section>
+
+
+        <!-- Vendor Section -->
+        <section class="panel" id="vendors">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Vendor Directory</h2>
+                    <p>Search and manage registered vendors.</p>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search by company, contact or service..."
+                        oninput="displayVendors()"
+                    >
+                </div>
+
+                <select id="categoryFilter" onchange="displayVendors()">
+                    <option value="all">All Categories</option>
+                    <option value="IT Services">IT Services</option>
+                    <option value="Hardware">Hardware</option>
+                    <option value="Software">Software</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Logistics">Logistics</option>
+                    <option value="Catering">Catering</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <select id="statusFilter" onchange="displayVendors()">
+                    <option value="all">All Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+
+            </div>
+
+
+            <!-- Vendor Table -->
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Category</th>
+                            <th>Service</th>
+                            <th>Contract Value</th>
+                            <th>Expiry</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="vendorTableBody">
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                No vendors available.
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- Contract Section -->
+        <section class="panel" id="contracts">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Contract Overview</h2>
+                    <p>Monitor vendor contract expiry dates.</p>
+                </div>
+            </div>
+
+            <div id="contractOverview" class="contract-list">
+                <p class="empty-message">
+                    No contract information available.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="vendorModal">
+
+        <div class="modal">
+
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow">VENDOR RECORD</p>
+                    <h2 id="modalTitle">Add Vendor</h2>
+                </div>
+
+                <button class="close-btn" onclick="closeModal()">
+                    ×
+                </button>
+            </div>
+
+
+            <form id="vendorForm">
+
+                <input type="hidden" id="vendorId">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Company Name *</label>
+                        <input
+                            type="text"
+                            id="companyName"
+                            placeholder="e.g. Tech Solutions Pvt Ltd"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Person *</label>
+                        <input
+                            type="text"
+                            id="contactPerson"
+                            placeholder="Contact person name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="vendor@example.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="9876543210"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="category" required>
+                            <option value="">Select category</option>
+                            <option value="IT Services">IT Services</option>
+                            <option value="Hardware">Hardware</option>
+                            <option value="Software">Software</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Catering">Catering</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Service *</label>
+                        <input
+                            type="text"
+                            id="service"
+                            placeholder="e.g. Network Maintenance"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contract Value (₹) *</label>
+                        <input
+                            type="number"
+                            id="contractValue"
+                            placeholder="50000"
+                            min="0"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contract Expiry *</label>
+                        <input
+                            type="date"
+                            id="contractExpiry"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rating</label>
+                        <select id="rating">
+                            <option value="5">★★★★★ - 5</option>
+                            <option value="4">★★★★☆ - 4</option>
+                            <option value="3">★★★☆☆ - 3</option>
+                            <option value="2">★★☆☆☆ - 2</option>
+                            <option value="1">★☆☆☆☆ - 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="status">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label>Additional Details</label>
+                    <textarea
+                        id="details"
+                        rows="3"
+                        placeholder="Enter additional vendor or contract details..."
+                    ></textarea>
+                </div>
+
+
+                <div class="modal-actions">
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        onclick="closeModal()"
+                    >
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="primary-btn">
+                        Save Vendor
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+
+    <!-- Firebase -->
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>
